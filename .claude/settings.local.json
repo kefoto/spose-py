@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git remote *)"
+      "Bash(git remote *)",
+      "Bash(pdfinfo nihms-1621051.pdf)",
+      "Bash(python3 -c \"import fitz; print\\('pymupdf ok'\\)\")",
+      "Bash(python3 -c \"import pdfplumber; print\\('pdfplumber ok'\\)\")",
+      "Bash(python3 -c \"import PyPDF2; print\\('pypdf2 ok'\\)\")",
+      "Bash(pip install *)",
+      "Bash(python3 -c \"import fitz; print\\('ok', fitz.__doc__[:40] if fitz.__doc__ else 'ok'\\)\")",
+      "Bash(python3 *)"
     ]
   }
 }
