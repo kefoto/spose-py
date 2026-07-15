@@ -1,0 +1,23 @@
+# Core scientific stack (parity + analyses)
+numpy>=1.24
+scipy>=1.10
+pandas>=2.0
+scikit-learn>=1.3
+matplotlib>=3.7
+
+# Visualization extras
+wordcloud>=1.9
+
+# Runtime acceleration
+#   numba  -> CPU parallel kernel for embedding2sim (fallback path)
+#   torch  -> GPU (CUDA/MPS) backend for embedding2sim on cluster nodes
+#   joblib -> embarrassingly-parallel CPU work (reference models, LOO classify)
+numba>=0.58
+joblib>=1.3
+torch>=2.0
+
+# Notebooks
+jupyter>=1.0
+ipykernel>=6.0
+nbformat>=5.9
+papermill>=2.4   # headless notebook execution on the cluster
