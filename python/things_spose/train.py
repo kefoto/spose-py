@@ -166,31 +166,56 @@ class TrainResult:
 # Loss + accuracy
 # --------------------------------------------------------------------------- #
 def triplet_loss(logits: torch.Tensor, weights: torch.Tensor,
-                 lambda_l1: float, n_train: int) -> torch.Tensor:
+                 lambda_l1: float, n_objects: int) -> torch.Tensor:
     """SPoSE objective on one minibatch.
 
-    Cross-entropy is *summed* over the batch (target class 0), matching the
-    paper's ``sum_n``. The L1 term is scaled by ``batch_size / n_train`` so that
-    summing the per-batch losses across a full epoch equals the paper's
-    ``sum_n CE + lambda * sum_m |X|``.
+    ``mean`` cross-entropy over the batch (target class 0) plus an L1 penalty
+    scaled by ``lambda_l1 / n_objects``. This matches the reference SPoSE
+    implementation (ViCCo-Group/SPoSE, Muttenthaler & Hebart), where the
+    per-batch objective is::
+
+        loss = mean_CE  +  (lmbda / n_items) * ||W||_1      # + soft positivity
+
+    with ``n_items`` the number of objects and ``lmbda = 0.008``. Calibrating
+    the L1 weight *per object* (not per triplet) is what makes ``0.008`` exert
+    enough sparsity pressure to drive unused dimensions to zero while leaving
+    informative ones intact -- so :func:`prune_and_sort` can drop them.
+
+    Scaling pitfalls found empirically on the full THINGS data:
+      * ``lambda / n_train`` (per *triplet*, ~2e3x weaker): accuracy is fine but
+        nothing prunes -- all 90 dimensions stay alive.
+      * ``lambda`` unscaled (~n_objects x stronger): the whole embedding
+        collapses to zero within one epoch.
+
+    Note the reference enforces positivity with a *soft* penalty
+    ``0.01 * sum(relu(-W))``; here we instead use a hard projection to ``>= 0``
+    after each optimiser step (see :meth:`SPoSE.clamp_nonnegative`), which is a
+    stricter reading of the paper's "strictly enforcing weights ... positive".
     """
     batch = logits.shape[0]
     target = logits.new_zeros(batch, dtype=torch.long)  # column 0 is correct
-    ce = torch.nn.functional.cross_entropy(logits, target, reduction="sum")
+    ce = torch.nn.functional.cross_entropy(logits, target, reduction="mean")
     l1 = weights.abs().sum()  # == weights.sum() since X >= 0
-    return ce + lambda_l1 * (batch / n_train) * l1
+    return ce + (lambda_l1 / n_objects) * l1
 
 
 @torch.no_grad()
 def odd_one_out_accuracy(model: SPoSE, triplets: torch.Tensor,
                          batch_size: int = 4096) -> float:
-    """Fraction of triplets whose kept-together pair (col 0) is the argmax."""
+    """Fraction of triplets whose kept-together pair (col 0) is the argmax.
+
+    Degenerate ties (all three proximities equal, e.g. a collapsed all-zero
+    embedding) are counted as *incorrect*, matching the reference ``accuracy_``.
+    Without this, a collapsed model would report a spurious 100%.
+    """
     model.eval()
     correct = 0
     for start in range(0, triplets.shape[0], batch_size):
         batch = triplets[start:start + batch_size]
-        pred = model(batch).argmax(dim=1)
-        correct += int((pred == 0).sum())
+        logits = model(batch)
+        pred = logits.argmax(dim=1)
+        tie = (logits == logits.amax(dim=1, keepdim=True)).all(dim=1)  # all equal
+        correct += int(((pred == 0) & ~tie).sum())
     return correct / triplets.shape[0]
 
 
@@ -251,7 +276,7 @@ def train_spose(train_triplets: np.ndarray,
         for start in range(0, n_train, cfg.batch_size):
             batch = train[perm[start:start + cfg.batch_size]]
             opt.zero_grad()
-            loss = triplet_loss(model(batch), model.weights, cfg.lambda_l1, n_train)
+            loss = triplet_loss(model(batch), model.weights, cfg.lambda_l1, n_objects)
             loss.backward()
             opt.step()
             model.clamp_nonnegative()  # projected gradient: enforce X >= 0
