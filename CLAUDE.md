@@ -15,15 +15,15 @@ The **Python port in `src/` is the active codebase** — see `src/README.md`. Th
 ## Repository Layout
 
 ```
-src/                     # the Python port (active)
-├── things_spose/        # library, organised by pipeline stage
-│   ├── core/            # shared infra: paths, backend, artifacts, fdr
-│   ├── data/            # stage 1: dataio (load/assemble), sampling (triplets)
-│   ├── training/        # stage 2: model, train, run_log, checkpoint
-│   └── analysis/        # stage 3: similarity, analyses, ..., viz
-├── scripts/             # orchestration entry points
-├── notebooks/           # 00_overview + one per figure
-└── cache/               # rebuildable artifacts (gitignored)
+things_spose/            # the library, organised by pipeline stage
+├── core/                # shared infra: paths, backend, artifacts, fdr
+├── data/                # stage 1: dataio (load/assemble), sampling (triplets)
+├── training/            # stage 2: model, train, run_log, checkpoint
+└── analysis/            # stage 3: similarity, analyses, ..., viz
+
+scripts/                 # orchestration entry points
+notebooks/               # 00_overview + one per figure
+cache/                   # rebuildable artifacts (gitignored)
 
 data/                    # all data (gitignored)
 ├── spose/               # the MATLAB-derived dataset the analyses read
@@ -38,12 +38,13 @@ reference/               # not read by any code
 ```
 
 Python code never hardcodes these locations: everything resolves through
-`src/things_spose/core/paths.py` (`paths.data()`, `paths.variable()`,
+`things_spose/core/paths.py` (`paths.data()`, `paths.variable()`,
 `paths.triplets()`, `paths.REFERENCE_MODELS_DIR`), overridable via
 `THINGS_DATA_DIR` / `THINGS_TRIPLET_DIR` / `THINGS_CACHE_DIR`. Change paths
-there, not at call sites. Note `paths.py` derives the repo root from its own
-depth (`__file__` four levels up) — moving it breaks every data path, so update
-that arithmetic if it ever relocates.
+there, not at call sites. **`paths.py` derives the repo root from its own depth**
+(`__file__` three levels up) — moving the file or changing the directory nesting
+silently breaks every data path, so update that arithmetic whenever the layout
+changes. This has already caused two outages.
 
 Imports follow the stage layout — there is no re-export at the package root:
 
@@ -57,7 +58,6 @@ from things_spose.analysis import analyses, viz
 ## Running the Analyses (Python)
 
 ```bash
-cd src
 python scripts/verify_parity.py        # check the port against MATLAB/paper values
 python scripts/build_cache.py --tsne   # one-time heavy precompute
 python scripts/run_analyses.py         # numeric spine -> JSON

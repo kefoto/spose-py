@@ -17,7 +17,7 @@ The library is organised by pipeline stage: **data → training → analysis**, 
 shared **core**.
 
 ```
-src/
+.
 ├── things_spose/
 │   ├── core/                # shared infra (depends on nothing else here)
 │   │   ├── paths.py         # dataset + cache locations (env-overridable)
@@ -62,7 +62,8 @@ from things_spose.training import train, checkpoint
 from things_spose.analysis import analyses, viz
 ```
 
-Data lives outside `src/`, at the repository root:
+Data and the original MATLAB release sit alongside the package, and no code
+reads from `reference/`:
 
 ```
 data/
@@ -80,7 +81,6 @@ reference/               # not read by any code
 ## Install
 
 ```bash
-cd src
 pip install -r requirements.txt
 ```
 
@@ -95,7 +95,7 @@ On a cluster, prefer the module system / conda env to supply the right CUDA whee
 |---|---|
 | `THINGS_DATA_DIR`    | Path to the `spose/` data directory (default: `data/spose/`). |
 | `THINGS_TRIPLET_DIR` | Path to the raw triplets (default: `data/triplet_dataset/`). |
-| `THINGS_CACHE_DIR`   | Where cache artifacts are written (default: `src/cache/`). |
+| `THINGS_CACHE_DIR`   | Where cache artifacts are written (default: `cache/`). |
 | `THINGS_DEVICE`      | `cpu` / `cuda` / `cuda:N` / `mps` / `auto` for the GPU backend. |
 | `THINGS_NUM_WORKERS` | CPU thread count (else `SLURM_CPUS_PER_TASK`, else `os.cpu_count()`). |
 
@@ -141,7 +141,6 @@ Each `figN.ipynb` has a `SAVE = False` flag — set it `True` to export SVGs (th
 ## Running on a cluster (Slurm)
 
 ```bash
-cd src
 cache_job=$(sbatch --parsable scripts/slurm/build_cache.sbatch)
 sbatch --dependency=afterok:$cache_job scripts/slurm/run_analyses.sbatch
 sbatch --dependency=afterok:$cache_job scripts/slurm/render_notebooks.sbatch

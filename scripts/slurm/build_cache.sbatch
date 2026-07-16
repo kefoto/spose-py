@@ -8,7 +8,7 @@
 #SBATCH --output=logs/build_cache_%j.out
 #
 # Build the rebuildable cache (Fig-6 ablation + Fig-4/5 t-SNE layout) once.
-# Uses the GPU embedding2sim backend. Submit from the src/ directory:
+# Uses the GPU embedding2sim backend. Submit from the repository root:
 #     sbatch scripts/slurm/build_cache.sbatch
 set -euo pipefail
 

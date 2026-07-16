@@ -1,4 +1,17 @@
-
 variables/
-.DS_store
 reference_models/
+.DS_store
+.DS_Store
+
+# Generated cache artifacts (rebuildable via scripts/build_cache.py)
+cache/*.npz
+cache/*.npy
+cache/*.mmap
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
+.numba_cache/

@@ -11,11 +11,10 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-# src/things_spose/core/paths.py -> repo root is four levels up.
+# things_spose/core/paths.py -> repo root is three levels up.
 _CORE_DIR = Path(__file__).resolve().parent
 _PKG_DIR = _CORE_DIR.parent
-_SRC_DIR = _PKG_DIR.parent
-_REPO_ROOT = _SRC_DIR.parent
+_REPO_ROOT = _PKG_DIR.parent
 
 
 def _resolve_spose_dir() -> Path:
@@ -50,7 +49,7 @@ TRIPLET_DIR: Path = Path(
 
 # Generated artifacts (rebuildable) live next to the Python code.
 CACHE_DIR: Path = Path(
-    os.environ.get("THINGS_CACHE_DIR", _SRC_DIR / "cache")
+    os.environ.get("THINGS_CACHE_DIR", _REPO_ROOT / "cache")
 ).expanduser().resolve()
 
 

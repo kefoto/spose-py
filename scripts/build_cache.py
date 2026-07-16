@@ -5,7 +5,7 @@ The only genuinely expensive precompute in the paper. Meant to run **once** on a
 GPU node (fast ``embedding2sim``) or a fat CPU node (parallel Numba kernel), after
 which every analysis/figure loads the artifacts instantly.
 
-Artifacts written to ``THINGS_CACHE_DIR`` (default ``src/cache/``):
+Artifacts written to ``THINGS_CACHE_DIR`` (default ``cache/``):
 
 * ``reduced_embeddings.npy``   (49, N, 49) float32 — Fig-6 ablation embeddings.
 * ``reduced_sim_pairvecs.npy`` (49, n_pairs) float32 — below-diagonal vectors of

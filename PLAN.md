@@ -1,7 +1,7 @@
 # SPoSE MATLAB → Python Port — Plan
 
 > **Provenance note.** This document was reconstructed from the current state of
-> the `src/` package and the agreed next steps, because the original planning
+> the `things_spose` package and the agreed next steps, because the original planning
 > conversation was not saved to a file. If anything here diverges from what we
 > decided, edit this file — it is the source of truth going forward.
 
@@ -43,7 +43,7 @@ tolerances.
 ## Architecture
 
 ```
-src/
+things_spose/
 ├── things_spose/          # library (import-light; heavy submodules lazy)
 │   ├── paths.py           # dataset + cache locations (env-overridable)
 │   ├── backend.py         # device / worker / backend selection for the cluster
@@ -137,7 +137,7 @@ Numeric analyses are done; the **plotting layer is not ported**. Needed:
 ### Phase 4 — Notebooks & docs
 - [ ] `notebooks/` — a driver notebook mirroring the figure sections, calling the
       library so results/figures render inline. `ipykernel` already in reqs.
-- [ ] Short README for `src/` (install, `THINGS_*` env vars, how to run on the
+- [ ] Short README (install, `THINGS_*` env vars, how to run on the
       cluster / a sample `sbatch` invocation).
 
 ## Open questions / decisions to confirm
