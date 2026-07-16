@@ -11,6 +11,18 @@ is ported to an importable package (`things_spose/`), a set of orchestration scr
 (`scripts/`), and one notebook per figure (`notebooks/`). It is designed to run
 on a compute cluster (GPU or fat CPU node).
 
+## Data
+
+`/data` folder contains the data for triplet decisions and computed spose embeddings
+
+`/triplet_dataset`:
+
+https://osf.io/f5rn6/files/osfstorage
+
+`/spose` folder contains `/data`, `/reference_models`, and `variables`:
+
+https://osf.io/z2784/overview provide the initial placeholders
+
 ## Layout
 
 The library is organised by pipeline stage: **data → training → analysis**, over a
