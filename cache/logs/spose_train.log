@@ -1,0 +1,20 @@
+16/07/2026 18:47:37 - [INFO] - epoch    1  loss      40380.3  active_dims  82  val_acc 63.01%
+16/07/2026 18:48:21 - [INFO] - epoch    2  loss      37520.6  active_dims  73  val_acc 63.48%
+16/07/2026 18:49:06 - [INFO] - epoch    3  loss      37181.9  active_dims  69  val_acc 63.64%
+16/07/2026 18:49:50 - [INFO] - epoch    4  loss      36973.7  active_dims  65  val_acc 63.67%
+16/07/2026 18:50:34 - [INFO] - epoch    5  loss      36811.8  active_dims  56  val_acc 63.75%
+16/07/2026 18:51:19 - [INFO] - epoch    6  loss      36717.7  active_dims  54  val_acc 63.76%
+16/07/2026 18:52:03 - [INFO] - epoch    7  loss      36641.9  active_dims  50  val_acc 63.82%
+16/07/2026 18:52:47 - [INFO] - epoch    8  loss      36581.9  active_dims  47  val_acc 63.81%
+16/07/2026 18:53:32 - [INFO] - epoch    9  loss      36537.6  active_dims  45  val_acc 63.81%
+16/07/2026 18:54:15 - [INFO] - epoch   10  loss      36502.4  active_dims  45  val_acc 63.76%
+16/07/2026 18:55:00 - [INFO] - epoch   11  loss      36464.9  active_dims  42  val_acc 63.82%
+16/07/2026 18:55:44 - [INFO] - epoch   12  loss      36441.0  active_dims  42  val_acc 63.80%
+16/07/2026 18:56:29 - [INFO] - epoch   13  loss      36415.9  active_dims  42  val_acc 63.80%
+16/07/2026 18:57:13 - [INFO] - epoch   14  loss      36392.3  active_dims  42  val_acc 63.80%
+16/07/2026 18:57:57 - [INFO] - epoch   15  loss      36371.4  active_dims  41  val_acc 63.80%
+16/07/2026 18:58:42 - [INFO] - epoch   16  loss      36348.5  active_dims  41  val_acc 63.80%
+16/07/2026 18:59:26 - [INFO] - epoch   17  loss      36335.1  active_dims  40  val_acc 63.76%
+16/07/2026 18:59:26 - [INFO] - early stop at epoch 17 (best val_acc 63.82%)
+16/07/2026 18:59:26 - [INFO] - done: 90 initial dims -> 50 after pruning  |  final val_acc 63.82%
+16/07/2026 18:59:26 - [INFO] - wrote final checkpoint cache/checkpoints/model_epoch0200.tar

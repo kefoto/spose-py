@@ -8,7 +8,19 @@
       "Bash(python3 -c \"import PyPDF2; print\\('pypdf2 ok'\\)\")",
       "Bash(pip install *)",
       "Bash(python3 -c \"import fitz; print\\('ok', fitz.__doc__[:40] if fitz.__doc__ else 'ok'\\)\")",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(mkdir -p /home/wallacelab/teba/multimodal_brain_inspired/ke/spose-py/data/triplet_dataset_1.4m)",
+      "Bash(cp -v /home/wallacelab/teba/multimodal_brain_inspired/anya/spose/triplets/behavioral_original/* /home/wallacelab/teba/multimodal_brain_inspired/ke/spose-py/data/triplet_dataset_1.4m/)",
+      "Bash(python -c \"import torch; print\\(torch.__version__, torch.cuda.is_available\\(\\), torch.cuda.device_count\\(\\) if torch.cuda.is_available\\(\\) else ''\\)\")",
+      "Bash(nvidia-smi --query-gpu=name,memory.used,memory.total,utilization.gpu --format=csv)",
+      "Bash(mkdir -p cache/checkpoints)",
+      "Bash(PYTHONUNBUFFERED=1 nohup python3 -u scripts/train_spose.py --out cache/spose_embedding_trained.txt --eval-every 1 --device cuda --checkpoint-dir cache/checkpoints --checkpoint-every 20 --log-file cache/spose_train.log)",
+      "Bash(echo \"PID: $!\")",
+      "Bash(THINGS_EMBEDDING_PATH=cache/spose_embedding_trained_sorted.txt python3 scripts/run_analyses.py)",
+      "Bash(THINGS_EMBEDDING_PATH=cache/spose_embedding_trained_sorted.txt python3 scripts/run_analyses.py --out cache/results_trained.json)",
+      "Bash(ps -p 394095 -o pid,etime,cmd)",
+      "Bash(echo \"PID $!\")",
+      "Bash(kill 400993)"
     ]
   }
 }

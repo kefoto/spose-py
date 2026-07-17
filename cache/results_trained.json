@@ -1,0 +1,72 @@
+{
+  "environment": "device=cuda (kind=cuda), num_workers=32, similarity_backend=gpu",
+  "fig2a_prediction": {
+    "accuracy": 64.6995,
+    "accuracy_ci95": 0.2334,
+    "noise_ceiling": 67.2208,
+    "noise_ceiling_ci95": 1.0386,
+    "percent_of_ceiling": 92.5708,
+    "percent_of_ceiling_se": 1.5117
+  },
+  "fig2b_similarity48": {
+    "r": 0.8711,
+    "r_ci95": [
+      0.846,
+      0.8922
+    ],
+    "reliability": 0.9105,
+    "splithalf": 0.8515,
+    "variance_explained": 0.8746
+  },
+  "classification": {
+    "accuracy_spose": 84.8921,
+    "accuracy_wordvec": 85.9712,
+    "n_categories": 18,
+    "n_objects": 1112
+  },
+  "fig7_typicality": {
+    "rho": [
+      -0.2065,
+      -0.1395,
+      -0.1591,
+      -0.0719,
+      -0.0877,
+      -0.1787,
+      -0.0466,
+      -0.0069,
+      -0.4975,
+      0.0855,
+      -0.0729,
+      0.2485,
+      0.4954,
+      -0.468,
+      -0.1594,
+      -0.0267,
+      0.058
+    ],
+    "p_adjusted": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.3916,
+      0.0003,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "n_significant_fdr": 1
+  },
+  "fig8_human_ratings": "skipped (embedding has 50 dims, needs 49 to align with the paper's human dimension ratings)",
+  "extfig1_reproducibility": "skipped (embedding has 50 dims, reference models are 49-dim)",
+  "fig6_ablation": "skipped (embedding has 50 dims, cache is 49-dim)",
+  "runtime_seconds": 5.8
+}

@@ -78,9 +78,9 @@ def parse_args(argv=None) -> argparse.Namespace:
                    help="Softmax temperature (beta) for choice randomness.")
     p.add_argument("--prune-threshold", type=float, default=0.1,
                    help="Drop dims whose max weight across objects is below this.")
-    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--seed", type=int, default=42)
     p.add_argument("--eval-every", type=int, default=5)
-    p.add_argument("--patience", type=int, default=0,
+    p.add_argument("--patience", type=int, default=10,
                    help="Early-stop after this many non-improving evals (0=off).")
     p.add_argument("--device", default=None,
                    help="cpu / cuda / mps. Default: auto-detect.")

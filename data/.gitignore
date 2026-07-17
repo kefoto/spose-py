@@ -1,2 +1,3 @@
-spose
-triplet_dataset
+spose/*
+triplet_dataset/*
+triplet_dataset_1.4m/*

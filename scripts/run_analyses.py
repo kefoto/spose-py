@@ -80,23 +80,39 @@ def run(skip_ablation: bool, backend_name: str) -> dict:
         "n_significant_fdr": int((typ.p_adjusted < 0.05).sum()),
     }
 
-    # Fig 8 — human dimension ratings -> similarity
-    human = analyses.human_rating_similarity(ds, backend_name=backend_name)
-    results["fig8_human_ratings"] = {
-        "r": human.r, "r_ci95": list(human.r_ci95),
-        "p_randomization": human.p_randomization,
-    }
+    # Fig 8 — human dimension ratings -> similarity. Substitutes raw human
+    # ratings for the paper's 49 named dimensions into the embedding, so it
+    # only makes sense for a 49-dim embedding aligned to those dimensions.
+    if ds.n_dims == 49:
+        human = analyses.human_rating_similarity(ds, backend_name=backend_name)
+        results["fig8_human_ratings"] = {
+            "r": human.r, "r_ci95": list(human.r_ci95),
+            "p_randomization": human.p_randomization,
+        }
+    else:
+        results["fig8_human_ratings"] = (
+            f"skipped (embedding has {ds.n_dims} dims, needs 49 to align with "
+            "the paper's human dimension ratings)"
+        )
 
-    # Ext Data Fig 1 — reproducibility
-    sortind0 = dataio.load_sortind()
-    repro = reproducibility.dimension_reproducibility(ds.embedding, sortind0)
-    results["extfig1_reproducibility"] = {
-        "mean_reproducibility_first": repro.mean[:5], "rank_corr": repro.rank_corr,
-        "rank_p": repro.rank_p, "rank_ci95": list(repro.rank_ci95),
-    }
+    # Ext Data Fig 1 — reproducibility against the 20 reference model fits,
+    # which are themselves 49-dim; only meaningful for a 49-dim embedding.
+    if ds.n_dims == 49:
+        sortind0 = dataio.load_sortind()
+        repro = reproducibility.dimension_reproducibility(ds.embedding, sortind0)
+        results["extfig1_reproducibility"] = {
+            "mean_reproducibility_first": repro.mean[:5], "rank_corr": repro.rank_corr,
+            "rank_p": repro.rank_p, "rank_ci95": list(repro.rank_ci95),
+        }
+    else:
+        results["extfig1_reproducibility"] = (
+            f"skipped (embedding has {ds.n_dims} dims, reference models are 49-dim)"
+        )
 
-    # Fig 6 — dimension ablation (needs cache)
-    if not skip_ablation and artifacts.exists(artifacts.REDUCED_PAIRVEC_FILE):
+    # Fig 6 — dimension ablation (needs cache; the cache is built from the
+    # shipped 49-dim embedding, so it's only valid to use when ds also has 49
+    # dims -- otherwise it's silently comparing a different embedding).
+    if not skip_ablation and ds.n_dims == 49 and artifacts.exists(artifacts.REDUCED_PAIRVEC_FILE):
         cache = artifacts.load_ablation_cache()
         abl = analyses.dimension_ablation(
             cache.reduced_embeddings, None, ds.spose_sim, ds.triplets_test,
@@ -105,6 +121,10 @@ def run(skip_ablation: bool, backend_name: str) -> dict:
             "mindim_acc": abl.mindim_acc, "maxdim_acc": abl.maxdim_acc,
             "mindim_var": abl.mindim_var, "maxdim_var": abl.maxdim_var,
         }
+    elif ds.n_dims != 49:
+        results["fig6_ablation"] = (
+            f"skipped (embedding has {ds.n_dims} dims, cache is 49-dim)"
+        )
     else:
         results["fig6_ablation"] = "skipped (no cache; run scripts/build_cache.py)"
 
@@ -122,8 +142,15 @@ def print_table(results: dict):
     print(f"Classification (SPoSE) : {c['accuracy_spose']:.1f}%   (word-vec {c['accuracy_wordvec']:.1f}%)")
     print(f"Typicality FDR-signif  : {results['fig7_typicality']['n_significant_fdr']} categories")
     f8 = results["fig8_human_ratings"]
-    print(f"Human-rating sim r     : {f8['r']:.3f}  (p_rand {f8['p_randomization']:.4f})")
-    print(f"Reproducibility rank r : {results['extfig1_reproducibility']['rank_corr']:.3f}")
+    if isinstance(f8, dict):
+        print(f"Human-rating sim r     : {f8['r']:.3f}  (p_rand {f8['p_randomization']:.4f})")
+    else:
+        print(f"Human-rating sim r     : {f8}")
+    repro = results["extfig1_reproducibility"]
+    if isinstance(repro, dict):
+        print(f"Reproducibility rank r : {repro['rank_corr']:.3f}")
+    else:
+        print(f"Reproducibility rank r : {repro}")
     print(f"Fig6 ablation          : {results['fig6_ablation']}")
     print("==================================\n")
 

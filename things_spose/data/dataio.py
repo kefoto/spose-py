@@ -13,7 +13,9 @@ notebook are free.
 from __future__ import annotations
 
 import functools
+import os
 from dataclasses import dataclass, field
+from pathlib import Path
 
 import numpy as np
 import scipy.io as sio
@@ -101,9 +103,22 @@ class Dataset:
 # --------------------------------------------------------------------------- #
 # Individual loaders
 # --------------------------------------------------------------------------- #
-def load_embedding() -> np.ndarray:
-    """The 1854x49 SPoSE embedding (already in sorted object order)."""
-    return np.loadtxt(paths.data("spose_embedding_49d_sorted.txt"), dtype=np.float64)
+def load_embedding(embedding_path: str | Path | None = None) -> np.ndarray:
+    """The 1854x49 SPoSE embedding (must already be in sorted object order).
+
+    Defaults to the shipped paper-reproduction embedding
+    (``data/spose/data/spose_embedding_49d_sorted.txt``). Pass ``embedding_path``
+    (or set ``THINGS_EMBEDDING_PATH``) to load a different embedding instead, e.g.
+    a freshly trained one — see :mod:`things_spose.training.train` for the
+    ``sortind`` remap a freshly trained embedding needs before it's in sorted
+    order.
+    """
+    if embedding_path is None:
+        embedding_path = os.environ.get("THINGS_EMBEDDING_PATH")
+    path = Path(embedding_path).expanduser().resolve() if embedding_path else paths.data(
+        "spose_embedding_49d_sorted.txt"
+    )
+    return np.loadtxt(path, dtype=np.float64)
 
 
 def load_sortind() -> np.ndarray:
@@ -173,11 +188,17 @@ def load_images() -> np.ndarray:
 # Full dataset
 # --------------------------------------------------------------------------- #
 @functools.cache
-def load_dataset() -> Dataset:
-    """Load and assemble the entire dataset (cached)."""
+def load_dataset(embedding_path: str | Path | None = None) -> Dataset:
+    """Load and assemble the entire dataset (cached per ``embedding_path``).
+
+    ``embedding_path`` is passed straight to :func:`load_embedding`: omit it
+    (and ``THINGS_EMBEDDING_PATH``) to get the shipped paper-reproduction
+    embedding, or point it at another sorted-order embedding (e.g. a trained
+    one) to run the same analyses/figures against it.
+    """
     paths.check_data()
 
-    embedding = load_embedding()
+    embedding = load_embedding(embedding_path)
     dot_product = embedding @ embedding.T
 
     spose_sim = _matload(paths.data("spose_similarity.mat"))["spose_sim"].astype(np.float64)

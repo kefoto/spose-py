@@ -8,6 +8,10 @@ cache/*.npz
 cache/*.npy
 cache/*.mmap
 
+# Training run logs
+# cache/logs/
+cache/checkpoints
+
 # Notebook checkpoints
 .ipynb_checkpoints/
 

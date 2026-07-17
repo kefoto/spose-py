@@ -295,6 +295,7 @@ def train_spose(train_triplets: np.ndarray,
     device = torch.device(cfg.device)
 
     logger = run_log.setup(cfg.log_file, console=verbose, append=cfg.resume)
+    logger.info(f"config: {cfg}")
 
     model = SPoSE(in_size=n_objects, out_size=cfg.n_dim).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=cfg.lr)
